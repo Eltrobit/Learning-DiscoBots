@@ -9,24 +9,6 @@ bot = commands.Bot(command_prefix='.', owner_ids=owners, intents=discord.Intents
 @bot.event
 async def on_ready():
     print("I`m ready!")
-
-#Moderation
-banwords = {'хохлы', 'путин', 'putin', 'украина', 'россия', 'росия', 'расия', 'рассия', 'расея', 'рассея'}
-
-@bot.event
-async def on_message(message):
-    await bot.process_commands(message)
-    if message.author == bot.user:
-        return()
-
-    for i in banwords:
-        if i.lower() in message.content.lower():
-            print("BANWORD", message.content,  "from", message.author.name, message.author.mention)
-            await message.delete()
-            break
-
-
-
 #Commands
 
 @bot.command()
@@ -50,7 +32,17 @@ async def ping(ctx):
 
 #Turning on
 
+async def Load():
+    for filename in os.listdir("./Cogs"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"Cogs.{filename[:-3]}")
+
 with open("info.txt") as info:
     token = info.read()
 
-bot.run(token)
+async def main():
+    async with bot:
+        await Load()
+        await bot.start(token)
+
+asyncio.run(main())
