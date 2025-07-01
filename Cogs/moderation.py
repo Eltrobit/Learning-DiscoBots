@@ -9,8 +9,7 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        await self.bot.process_commands(message)
-        if message.author == self.bot.user:
+        if message.author == self.bot.user or message.content.startswith('.'):
             return
 
         for i in banwords:
@@ -18,6 +17,7 @@ class Moderation(commands.Cog):
                 print("BANWORD", message.content, "from", message.author.name, message.author.mention)
                 await message.delete()
                 break
+        await self.bot.process_commands(message)
 
 async def setup(bot):
     await bot.add_cog(Moderation(bot))
